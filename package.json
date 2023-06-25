@@ -1,0 +1,23 @@
+{
+  "name": "google-account-android",
+  "version": "0.1.0",
+  "description": "Google account automation via Android device",
+  "main": "lib/index.js",
+  "repository": "https://github.com/pyrosec/google-account-android",
+  "author": "pyrosec",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "node-calls-python": "^1.7.7",
+    "smspinverify": "https://github.com/pyrosec/smspinverify",
+    "textverified": "https://github.com/pyrosec/textverified"
+  },
+  "devDependencies": {
+    "@types/node": "^20.3.1",
+    "nice-repl": "^0.1.2",
+    "typescript": "^5.1.3"
+  }
+}
