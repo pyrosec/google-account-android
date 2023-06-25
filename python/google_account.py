@@ -1,5 +1,6 @@
 from com.dtmilano.android.viewclient import ViewClient
 from time import sleep
+from com.dtmilano.android.adb.adbclient import AdbClient
 import pdb
 
 def find_tag(dump, tag):
@@ -18,6 +19,20 @@ class GoogleAccountViewClient:
     el = self.vc.findViewWithText(text)
     return el and True or False;
     
+  def goto_add_google(self, pin="000000"):
+    adbclient = AdbClient()
+    device = adbclient.getDevices()[0]
+    adbclient.setSerialno(device.serialno)
+    adbclient.shell("am start -a android.settings.ADD_ACCOUNT_SETTINGS -n com.android.settings/.accounts.AddAccountSettings")
+    self.dump()
+    self.vc.findViewWithTextOrRaise("Google").touch()
+    self.vc.sleep(5)
+    edit_field = find_edit_text(self.dump())
+    if edit_field:
+      edit_field.setText(pin + "\n")
+      self.vc.sleep(5)
+
+
 
   def setup(self, username, password, first_name, last_name):
     self.dump()
@@ -87,6 +102,7 @@ class GoogleAccountViewClient:
 
 if __name__ == "__main__":
   vc = GoogleAccountViewClient()
+  vc.goto_add_google("000000")
   vc.setup("fcktheoppsbustback", "asdasdasd111", "Rick", "Jones")
   vc.enter_verification_number("+16232613548")
   vc.enter_otp("042884")
