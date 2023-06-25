@@ -10,10 +10,11 @@ export declare class GoogleAccountAndroid {
     getOTP(fn: any, goBack: any): Promise<any>;
     getOTPFromSmsPinVerify(fn: any, goBack: any, app?: string, ticks?: number): Promise<any>;
     hasViewWithText(text: any): Promise<boolean>;
-    static createAccount({ username, password, name, smspinverify }: {
+    static createAccount({ username, password, name, pin, smspinverify }: {
         username: any;
         password: any;
         name: any;
+        pin: any;
         smspinverify: any;
     }): Promise<void>;
 }

@@ -7,6 +7,9 @@
   "author": "pyrosec",
   "license": "MIT",
   "private": false,
+  "bin": {
+    "google-account-android": "./bin/google-account-android.js"
+  },
   "scripts": {
     "build": "tsc"
   },

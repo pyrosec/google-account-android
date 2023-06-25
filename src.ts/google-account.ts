@@ -31,7 +31,7 @@ export async function getOTP(token, fn, goBack) {
         await fn(verification.number);
         await timeout(1000);
 	if (await this.hasViewWithText("This phone number has been used too many times")) return false;
-	if (await this.hasViewWithText("This phone number cannot be used for verification.")) return false;
+        if (await this.hasViewWithText("This phone number cannot be used for verification.")) return false;
         for (let i = 0; i < 10; i++) {
           this.logger.info("poll OTP ...");
           const status = await textVerified.getVerification({
@@ -158,17 +158,24 @@ export class GoogleAccountAndroid {
     username,
     password,
     name,
+    pin,
     smspinverify
   }) {
     const googleAccount = await this.initialize();
     if (smspinverify) googleAccount.getOTP = googleAccount.getOTPFromSmsPinVerify;
     const [ firstName, lastName ] = name.split(/\s/);
+    googleAccount.logger.info('add Google account view');
+    await py.call(googleAccount.googleAccountViewClient, "goto_add_google", pin || "000000");
+    googleAccount.logger.info('wait 10s');
+    await timeout(10000);
+    googleAccount.logger.info('first phase of workflow');
     await py.call(googleAccount.googleAccountViewClient, "setup", username, password, firstName, lastName);
     if (!await googleAccount.hasViewWithText("Skip")) {
       await py.call(googleAccount.googleAccountViewClient, "enter_otp", await googleAccount.getOTP(async (number) => {
         await py.call(googleAccount.googleAccountViewClient, "enter_verification_number", "+1" + number);
       }, async () => {}) );
     }
+    await timeout(5000);
     await py.call(googleAccount.googleAccountViewClient, "finish_workflow");
   }
 }

@@ -16,8 +16,11 @@ class GoogleAccountViewClient:
     self.vc = ViewClient(*ViewClient.connectToDeviceOrExit())
   def has_view_with_text(self, text):
     self.dump()
-    el = self.vc.findViewWithText(text)
-    return el and True or False;
+    try:
+      self.vc.findViewWithTextOrRaise(text)
+      return True
+    except:
+      return False
     
   def goto_add_google(self, pin="000000"):
     adbclient = AdbClient()
@@ -25,18 +28,19 @@ class GoogleAccountViewClient:
     adbclient.setSerialno(device.serialno)
     adbclient.shell("am start -a android.settings.ADD_ACCOUNT_SETTINGS -n com.android.settings/.accounts.AddAccountSettings")
     self.dump()
-    self.vc.findViewWithTextOrRaise("Google").touch()
-    self.vc.sleep(5)
-    edit_field = find_edit_text(self.dump())
-    if edit_field:
-      edit_field.setText(pin + "\n")
+    google_field = self.vc.findViewWithText("Google")
+    if google_field:
+      google_field.touch()
       self.vc.sleep(5)
+      edit_field = find_edit_text(self.dump())
+      if edit_field:
+        edit_field.setText(pin + "\n")
+        self.vc.sleep(5)
 
 
 
   def setup(self, username, password, first_name, last_name):
     self.dump()
-    pdb.set_trace()
     create_account = self.vc.findViewWithTextOrRaise(u'Create account')
     create_account.touch()
     self.dump();
@@ -76,8 +80,8 @@ class GoogleAccountViewClient:
     try:
       return self.vc.dump()
     except:
-      sleep(10000)
-      return self.vc.dump()
+      sleep(5)
+      return self.dump();
   def enter_verification_number(self, phone_number):
     self.dump()
     self.vc.findViewByIdOrRaise("phoneNumberId").setText(phone_number + "\n")
@@ -85,25 +89,40 @@ class GoogleAccountViewClient:
     #self.vc.findViewByTagOrRaise("Button").touch()
     #findViewWithTextOrRaise(u'Next').touch()
   def enter_otp(self, otp):
+    self.vc.sleep(5)
     find_edit_text(self.dump()).setText(otp + "\n")
   def finish_workflow(self):
+    self.vc.device.dragDip((289.0, 485.0), (46.0, 0.0), 1000, 20, 0)
+    self.vc.sleep(5)
     self.dump()
     self.vc.findViewWithTextOrRaise(u'Skip').touch()
     self.dump()
     self.vc.findViewWithTextOrRaise(u'Next').touch()
     self.dump()
-    self.vc.findViewWithTextOrRaise(u'More options').touch()
+    self.vc.device.dragDip((289.0, 485.0), (46.0, 0.0), 1000, 20, 0)
+    #self.vc.findViewWithTextOrRaise(u'More options').touch()
     self.dump()
-    self.vc.findViewByIdOrRaise("selectionc10").touch()
-    self.vc.findViewByIdOrRaise("selectionc12").touch()
-    self.vc.findViewByIdOrRaise("selectionc14").touch()
+    self.vc.device.dragDip((289.0, 485.0), (46.0, 0.0), 1000, 20, 0)
+    self.dump()
+    self.vc.device.dragDip((289.0, 485.0), (46.0, 0.0), 1000, 20, 0)
+    self.dump()
+    self.vc.device.dragDip((289.0, 485.0), (46.0, 0.0), 1000, 20, 0)
+    self.dump()
+    self.vc.device.dragDip((289.0, 485.0), (46.0, 0.0), 1000, 20, 0)
+    self.dump()
+    #self.vc.findViewByIdOrRaise("selectionc10").touch()
+    #self.vc.findViewByIdOrRaise("selectionc12").touch()
+    #self.vc.findViewByIdOrRaise("selectionc14").touch()
     self.vc.findViewWithTextOrRaise(u'I agree').touch()
+    self.dump()
+    self.vc.findViewWithTextOrRaise("Confirm").touch()
+    
 
 
 if __name__ == "__main__":
   vc = GoogleAccountViewClient()
-  vc.goto_add_google("000000")
-  vc.setup("fcktheoppsbustback", "asdasdasd111", "Rick", "Jones")
-  vc.enter_verification_number("+16232613548")
-  vc.enter_otp("042884")
+  #vc.goto_add_google("000000")
+  #vc.setup("fcktheoppsbustback", "asdasdasd111", "Rick", "Jones")
+  #vc.enter_verification_number("+16232613548")
+  vc.enter_otp("340481")
   vc.finish_workflow()
